@@ -369,13 +369,15 @@ class Abcd(object):
     import pickle
     
     abc = Abcd(2,3) # __init__ and __new__ are called
-    byte_data = pickle.dumps(ok) # Bytes code /  __getnewargs__ is called
+    byte_data = pickle.dumps(abc) # Bytes code /  __getnewargs__ is called
     
     # Now you can use the byte_data to transport above the internet
    
-    a2 = pickle.loads(data) # __setstate__ is called, unpacking the data
+    a2 = pickle.loads(byte_data) # __setstate__ is called, unpacking the data
     
     # now abc and a2 are same obj
+    # bytedata
+    b'\x80\x04\x95*\x00\x00\x00\x00\x00\x00\x00\x8c\x04data\x94\x8c\x04Abcd\x94\x93\x94K\x02K\x03\x86\x94\x81\x94}\x94(\x8c\x01x\x94K\x02\x8c\x01y\x94K\x03ub.
 """
 
 # s.index(e) "Return the index of the first element" can be used in LIST and TUPLES
@@ -551,15 +553,65 @@ each interation create new row and concat with board
 """
 
 
+# Combined attribution and sequences
+
+# Mutable sequences
+l = [1,2,3]
+id(l) # 140361155724736
+
+l *= 2 # [1, 2, 3, 1, 2, 3]
+id(l) # 140361155724736 - Same object with new itens
+
+# Imutable sequence
+t = (1,2,3)
+id(t) # 139999474455424
+t *= 2 # (1, 2, 3, 1, 2, 3)
+id(t) # 139864951363168 != 139999474455424
+
+# The enigma about attribuition
+
+t = (1,2, [30,40])
+# t[2] += [50,60]
+
+# TypeError: 'tuple' object does not support item assignment
+# (1, 2, [30, 40, 50, 60])
+import dis
+# dis.dis('tuple_here[index_of_list_here] += other_list_here')
+
+"""
+  1           0 LOAD_NAME                0 (tuple_here) 
+              2 LOAD_NAME                1 (index_of_list_here)
+              4 DUP_TOP_TWO
+              6 BINARY_SUBSCR
+              8 LOAD_NAME                2 (other_list_here)
+             10 INPLACE_ADD
+             12 ROT_THREE
+             14 STORE_SUBSCR
+             16 LOAD_CONST               0 (None)
+             18 RETURN_VALUE
+"""
+
+"""
+- tuple_here is on the TOS (Top of Stack)
+- In 10 - Execute TOS += other_list_here
+- It works when TOS refeers to mutable object
+- It doesn't work when TOS refeers to imutable object, like in line 572
+
+We can understeand, put mutable object inside a tuple its not a good idea
+"""
+
+
+list1 = [5,6,214,9,5,97,56,148,126,32]
+
+# Inplace, no return, return is None, doenst appear in console
+# with no return, we cant chain other methods
+# change list in place
+list1.sort()
+
+# Return a new list
+# doenst change list
+list2 = sorted(list1)
 
 
 
 
-
-
-
-
-
-
-
-ipdb.set_trace()
