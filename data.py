@@ -612,6 +612,141 @@ list1.sort()
 # doenst change list
 list2 = sorted(list1)
 
+import itertools
+import heapq  
+
+objects = [
+    {"species": "cat", "name": "fluffy"},
+    {"species": "cat", "name": "Kid"},
+    {"species": "cat", "name": "Boris"},
+    {"species": "dog", "name": "Jack"},
+    {"species": "dog", "name": "Nina"},
+    {"species": "dog", "name": "Mel"},
+    {"species": "dog", "name": "Chorao"},
+]
+
+iterator_by_species = itertools.groupby(objects, lambda x: x["species"])
+
+res = []
+for specie, names in iterator_by_species:
+    res.append({ specie: [name['name'] for name in names] })
+
+res # [{'cat': ['fluffy', 'Kid', 'Boris']}, {'dog': ['Jack', 'Nina', 'Mel', 'Chorao']}]
+
+# Taking the 3 largest numbers
+res = heapq.nlargest(3, list1) # [148, 126, 214]
 
 
+# Binary search testing left and right
+from bisect import bisect_left
 
+list1 = [5, 5, 6, 9, 32, 56, 97, 56, 97, 56, 97, 56, 97, 126, 148, 214]
+list1.sort()
+
+ltr = bisect_left(list1, 32) # 4
+list1[ltr] # 32
+
+
+HAYSTACK = [1, 4, 5, 6, 8, 11, 12, 15, 20, 21, 23, 23, 26, 29, 30]
+NEEDLES = [0, 1, 2, 5, 8, 10, 22, 23, 29, 30, 31]
+ROW_FMT = '{0:2d} @ {1:3d} {2}{0:2d}'
+
+def demo(bisect_left):
+    for needle in reversed(NEEDLES):
+        position = bisect_left(HAYSTACK, needle)
+        offset = position * '  |'
+        #print(ROW_FMT.format(needle, position, offset))
+
+# print('DEMO:', bisect_left.__name__)
+# print('haystack ->', ' '.join('%2d' % n for n in HAYSTACK))
+demo(bisect_left)
+
+"""
+DEMO: bisect_left
+haystack ->  1  4  5  6  8 11 12 15 20 21 23 23 26 29 30
+31 @  15   |  |  |  |  |  |  |  |  |  |  |  |  |  |  |31
+30 @  14   |  |  |  |  |  |  |  |  |  |  |  |  |  |30
+29 @  13   |  |  |  |  |  |  |  |  |  |  |  |  |29
+23 @  10   |  |  |  |  |  |  |  |  |  |23
+22 @  10   |  |  |  |  |  |  |  |  |  |22
+10 @   5   |  |  |  |  |10
+ 8 @   4   |  |  |  | 8
+ 5 @   2   |  | 5
+ 2 @   1   | 2
+ 1 @   0  1
+ 0 @   0  0
+"""
+
+import random
+import bisect
+
+def grade(score, breakpoints=[50,60,70,80,90,100], grade=['I', 'S', 'B', 'E', 'O']):
+    if score < 50: 
+        return 'I'
+    a = bisect_left(breakpoints, score)
+    return grade[a-1]
+
+students_results = [random.randint(0, 10) * 10 for _ in range(10)]
+res = [grade(number) for number in students_results] # ['B', 'O', 'I', 'O', 'I', 'E', 'I', 'I', 'E', 'I']
+
+my_list = []
+for i in range(20):
+    new_item = random.randrange(20*2)
+    bisect.insort(my_list, new_item) # Insert items in order
+    # print('%2d ->' % new_item, my_list)
+"""
+26 -> [26]
+ 3 -> [3, 26]
+ 7 -> [3, 7, 26]
+22 -> [3, 7, 22, 26]
+21 -> [3, 7, 21, 22, 26]
+ 1 -> [1, 3, 7, 21, 22, 26]
+ 8 -> [1, 3, 7, 8, 21, 22, 26]
+ 0 -> [0, 1, 3, 7, 8, 21, 22, 26]
+15 -> [0, 1, 3, 7, 8, 15, 21, 22, 26]
+34 -> [0, 1, 3, 7, 8, 15, 21, 22, 26, 34]
+18 -> [0, 1, 3, 7, 8, 15, 18, 21, 22, 26, 34]
+ 7 -> [0, 1, 3, 7, 7, 8, 15, 18, 21, 22, 26, 34]
+10 -> [0, 1, 3, 7, 7, 8, 10, 15, 18, 21, 22, 26, 34]
+17 -> [0, 1, 3, 7, 7, 8, 10, 15, 17, 18, 21, 22, 26, 34]
+17 -> [0, 1, 3, 7, 7, 8, 10, 15, 17, 17, 18, 21, 22, 26, 34]
+18 -> [0, 1, 3, 7, 7, 8, 10, 15, 17, 17, 18, 18, 21, 22, 26, 34]
+39 -> [0, 1, 3, 7, 7, 8, 10, 15, 17, 17, 18, 18, 21, 22, 26, 34, 39]
+ 5 -> [0, 1, 3, 5, 7, 7, 8, 10, 15, 17, 17, 18, 18, 21, 22, 26, 34, 39]
+ 9 -> [0, 1, 3, 5, 7, 7, 8, 9, 10, 15, 17, 17, 18, 18, 21, 22, 26, 34, 39]
+14 -> [0, 1, 3, 5, 7, 7, 8, 9, 10, 14, 15, 17, 17, 18, 18, 21, 22, 26, 34, 39]
+"""
+
+
+# Arrays 
+from array import array
+import sys
+
+# floats = [random.random() for number in range(10**7)]
+# print(sys.getsizeof(floats)) # 89.095.160 bytes or 89 mb
+
+floats = array('d', ( random.random() for i in range(10**7) ) )
+# print(sys.getsizeof(floats)) # 81.940.368 bytes or 81mb
+print(floats[:-1])
+
+fp = open('floats.bin', 'wb')
+floats.tofile(fp)
+fp.close()
+floats2 = array('d')
+fp = open('floats.bin', 'rb')
+floats2.fromfile(fp, 10**7)
+fp.close() 
+print(floats2[:-1])
+
+floats2 == floats # True
+
+"""
+STEPS:
+- import type array
+- Create one array with floating point
+- Inspect last element
+- Create a empty double array
+- Read 10MM binary numbers from file
+- Inspect last element
+- Verify if they are equal
+"""
