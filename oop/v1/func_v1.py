@@ -1,10 +1,21 @@
 from datetime import datetime
+from typing import Callable
+from functools import partial
+import ipdb
 
-def greet(name: str, greeting_intro: str) -> str:
-    return f"{greeting_intro}, {name}"
+GreetingReader = Callable[[], str]
+GreetingFunction = Callable[[str], str]
 
-def greet_list(names: list[str], greeting_intro: str) -> list[str]:
-    return [greet(name, greeting_intro) for name in names]
+
+def greet(name: str, greeting_reader: GreetingReader) -> str:
+    if name == "Yuri":
+        return "Yuri is a good name"
+    return f"{greeting_reader()}, {name}"
+
+
+def greet_list(names: list[str], greeting_fn: GreetingFunction) -> list[str]:
+    return [greeting_fn(name) for name in names]
+
 
 def read_greeting() -> str:
     current_time = datetime.now()
@@ -19,8 +30,9 @@ def read_name() -> str:
     return input("Enter your name: ")
 
 def main() -> None:
-    print(greet(read_name(), read_greeting()))
-    print(greet_list(["John", "Jane", "Mary"], read_greeting()))
+    greet_fn = partial(greet, greeting_reader=read_greeting)
+    print(greet_fn(read_name()))
+    print(greet_list(["John", "Jane", "Mary"], greet_fn))
 
 if __name__ == "__main__":
     main()
