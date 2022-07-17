@@ -12,6 +12,7 @@ class Greeting:
         for name in names:
             greetings.append(name)
         return greetings
+        
 
 def main() -> None:
     current_time = datetime.now()
