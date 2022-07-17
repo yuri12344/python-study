@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Callable
 from functools import partial
-import ipdb
 
 GreetingReader = Callable[[], str]
 GreetingFunction = Callable[[str], str]
