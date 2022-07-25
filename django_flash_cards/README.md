@@ -31,3 +31,5 @@ Run the Django development server:
 ```
 
 Navigate to `http://localhost:8000/` to see your flashcards app in action.
+
+This study comes from https://realpython.com/django-flashcards-app/
